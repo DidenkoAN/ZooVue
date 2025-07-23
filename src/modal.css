@@ -1,0 +1,42 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content1 {
+  border-radius: 10px;
+  min-width: 500px;
+}
+
+a {
+  color: white;
+}
+
+.fotterModal {
+  background-color: #141232;
+}
+
+.bodyModal {
+  background: #14213d;
+  padding: 2rem;
+}
+h6 {
+  color: white;
+}
+
+textarea,
+input {
+  border-radius: 8px;
+  padding: 5px 10px 5px 10px;
+  background-color: #e5e5e599;
+}
+.lab {
+  color: white;
+  font-size: 28px;
+}
