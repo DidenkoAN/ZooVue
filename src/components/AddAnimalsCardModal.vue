@@ -27,6 +27,7 @@
           <label class="col col-4 lab">Description</label>
           <textarea type="ltext" class="col col-8"></textarea>
         </div>
+
         <div class="mb-4 row">
           <label class="col col-4 lab">Upload a photo</label>
           <button class="col col-4">Overview</button>

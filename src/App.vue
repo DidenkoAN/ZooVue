@@ -85,8 +85,8 @@ export default {
     return {
       currentComponent: "DefaultText",
       login: false,
-      // isModal: this.login ? "" : "LoginModal",
-      isModal: "AddAnimalsCardModal",
+      isModal: this.login ? "" : "LoginModal",
+      // isModal: "AddAnimalsCardModal",
     };
   },
   methods: {

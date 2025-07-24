@@ -42,7 +42,21 @@
             <td>@mdo</td>
             <td>
               <div class="row">
-                <div class="col col-6"><button @click="mounted">U</button></div>
+                <div class="col col-6"><button @click="start">U</button></div>
+                <div class="col col-6"><button>R</button></div>
+              </div>
+            </td>
+          </tr>
+
+          <tr v-if="this.dates != []" v-for="date in this.dates">
+            <th scope="row">{{ date.id }}</th>
+            <td>{{ date.name }}</td>
+            <td>{{ date.email }}</td>
+            <td>{{ date.phone }}</td>
+            <td>@mdo</td>
+            <td>
+              <div class="row">
+                <div class="col col-6"><button @click="start">U</button></div>
                 <div class="col col-6"><button>R</button></div>
               </div>
             </td>
@@ -53,18 +67,26 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import { onMounted } from "vue";
+import { useFetch } from "@vueuse/core";
+import { ref } from "vue";
+const data1 = ref([]);
 
 export default {
+  data() {
+    return {
+      dates: [],
+    };
+  },
   methods: {
-    async mounted() {
-      console.log("start");
-      const resp = await axios.get("https://jsonplaceholder.org/users");
-      console.log(resp);
+    async start() {
+      let url = "https://jsonplaceholder.typicode.com/users";
+      let { isFetching, error, data } = await useFetch(url).json();
+      this.dates = data.value;
+      console.log(this.dates, "2");
     },
+
     onMounted() {
-      mounted();
+      console.log("Hello");
     },
   },
 };
