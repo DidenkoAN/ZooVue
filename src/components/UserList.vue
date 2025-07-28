@@ -1,23 +1,27 @@
 <template>
+  <component v-if="isModal != ''" :is="isModal" @setIsModal1="setIsModal1" />
   <div class="container">
     <div class="row pb-5">
       <div class="col col-3"><h3>User list</h3></div>
       <div class="col col-6">
-        <button class="actBtn">Removed</button>
+        <button v-if="!this.removed" @click="this.isRemoved" class="actBtn">
+          Removed
+        </button>
+        <button v-else @click="this.isRemoved" class="actBtn">Existing</button>
       </div>
     </div>
     <div class="row pt-5 pb-3">
       <div class="col col-4">
-        <label class="col col-4">Filter</label>
-        <input type="text" class="col col-4" />
+        <label class="col col-4">Name</label>
+        <input type="text" class="col col-4" v-model="this.name" />
       </div>
       <div class="col col-4">
-        <label class="col col-4">Filter</label>
-        <input type="text" class="col col-4" />
+        <label class="col col-4">Email</label>
+        <input type="text" class="col col-4" v-model="this.email" />
       </div>
       <div class="col col-4">
-        <label class="col col-4">Filter</label>
-        <input type="text" class="col col-4" />
+        <label class="col col-4">Phone</label>
+        <input type="text" class="col col-4" v-model="this.phone" />
       </div>
     </div>
 
@@ -29,37 +33,21 @@
             <th scope="col">name</th>
             <th scope="col">email</th>
             <th scope="col">phone</th>
-            <th scope="col">password</th>
-            <th scope="col">actions</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Otto</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>@mdo</td>
-            <td>
-              <div class="row">
-                <div class="col col-6"><button @click="start">U</button></div>
-                <div class="col col-6"><button>R</button></div>
-              </div>
-            </td>
-          </tr>
-
-          <tr v-if="this.dates != []" v-for="date in this.dates">
-            <th scope="row">{{ date.id }}</th>
-            <td>{{ date.name }}</td>
-            <td>{{ date.email }}</td>
-            <td>{{ date.phone }}</td>
-            <td>@mdo</td>
-            <td>
-              <div class="row">
-                <div class="col col-6"><button @click="start">U</button></div>
-                <div class="col col-6"><button>R</button></div>
-              </div>
-            </td>
+        <tbody v-if="this.datas != []" v-for="data in this.datas">
+          <tr
+            v-if="
+              Boolean(data.removed) == this.removed &&
+              (this.name == '' || data.name.includes(this.name)) &&
+              (this.email == '' || data.name.includes(this.email)) &&
+              (this.phone == '' || data.name.includes(this.phone))
+            "
+          >
+            <th scope="row">{{ data.id }}</th>
+            <td>{{ data.name }}</td>
+            <td>{{ data.email }}</td>
+            <td>{{ data.phone }}</td>
           </tr>
         </tbody>
       </table>
@@ -67,26 +55,41 @@
   </div>
 </template>
 <script>
-import { useFetch } from "@vueuse/core";
-import { ref } from "vue";
-const data1 = ref([]);
+import deleteProfileModal from "./deleteProfileModal.vue";
+import { getUsers } from "@/api/userAPI";
 
 export default {
+  components: {
+    deleteProfileModal,
+  },
   data() {
     return {
-      dates: [],
+      datas: [],
+      name: "",
+      email: "",
+      phone: "",
+      isModal: "",
+      removed: false,
     };
+  },
+  mounted() {
+    this.start();
   },
   methods: {
     async start() {
-      let url = "https://jsonplaceholder.typicode.com/users";
-      let { isFetching, error, data } = await useFetch(url).json();
-      this.dates = data.value;
-      console.log(this.dates, "2");
+      this.datas = await getUsers();
     },
 
-    onMounted() {
-      console.log("Hello");
+    delete() {
+      this.isModal = "deleteProfileModal";
+    },
+
+    setIsModal1(_isModal) {
+      this.isModal = _isModal;
+      this.$emit("setIsModal", "");
+    },
+    isRemoved() {
+      this.removed = !this.removed;
     },
   },
 };

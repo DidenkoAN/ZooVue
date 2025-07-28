@@ -3,7 +3,12 @@
     <component v-if="isModal != ''" :is="isModal" @setIsModal="setIsModal" />
 
     <div class="row c1 p-3">
-      <div class="col col-10 text-end"><label>Ник</label></div>
+      <div class="col col-10 text-end">
+        <a v-if="this.login" @click="setIsModal('ProfileModal')">{{
+          this.user.name
+        }}</a>
+      </div>
+
       <div class="col col-2 text-center">
         <button
           v-if="!this.login"
@@ -53,7 +58,7 @@
       </div>
       <!-- <div class="col c3 col-10 p-4"><default-text></default-text></div> -->
       <div class="col c3 col-9 p-4">
-        <component :is="currentComponent" />
+        <component :is="currentComponent" @setIsModal="setIsModal" />
       </div>
     </div>
     <div></div>
@@ -69,6 +74,8 @@ import LoginModal from "@/components/LoginModal.vue";
 import ProfileModal from "@/components/ProfileModal.vue";
 import RegistModal from "@/components/RegistModal.vue";
 import AddAnimalsCardModal from "@/components/AddAnimalsCardModal.vue";
+import deleteEntryModal from "./components/deleteEntryModal.vue";
+import { watch } from "vue";
 
 export default {
   components: {
@@ -80,14 +87,25 @@ export default {
     ProfileModal,
     RegistModal,
     AddAnimalsCardModal,
+    deleteEntryModal,
   },
   data() {
     return {
       currentComponent: "DefaultText",
       login: false,
-      isModal: this.login ? "" : "LoginModal",
-      // isModal: "AddAnimalsCardModal",
+      isModal: "LoginModal",
+      user: null,
+      // isModal: "deleteEntryModal",
     };
+  },
+  mounted() {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      this.login = true;
+      this.isModal = "";
+      this.currentComponent = "AnimalsCard";
+      this.user = JSON.parse(userData);
+    }
   },
   methods: {
     animalsS() {
@@ -104,19 +122,26 @@ export default {
     },
     setIsModal(_isModal) {
       this.isModal = _isModal;
-    },
-
-    setIsModal(_isModal, _login) {
-      this.isModal = _isModal;
-      if (!_login) return;
-      this.login = _login;
-      this.currentComponent = "AnimalsCard";
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        if (this.login) return;
+        this.currentComponent = "AnimalsCard";
+        this.login = true;
+        this.user = JSON.parse(userData);
+      } else if (this.login) {
+        this.currentComponent = "DefaultText";
+        this.login = false;
+        this.user = null;
+        this.isModal = "LoginModal";
+      }
     },
 
     logout() {
       this.isModal = "LoginModal";
       this.currentComponent = "DefaultText";
       this.login = false;
+      this.user = null;
+      localStorage.removeItem("user");
     },
   },
 };
