@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="modal-overlay">
+    <div class="modal-overlay" v-if="this.id">
       <div class="modal-content3 bodyModal text-center">
-        <div class="mb-4 row"><h1>Add animal card</h1></div>
+        <div class="mb-4 row"><h1>Edit animal card</h1></div>
         <div class="mb-4 row">
           <label class="col col-4 lab">Animal</label>
           <select class="col col-8" id="mySelect" v-model="animal">
@@ -74,9 +74,9 @@
   </div>
 </template>
 <script>
-import { Add } from "@/api/animalCardAPI";
-import { getAnimals } from "@/api/animalAPI";
+import { Update } from "@/api/animalCardAPI";
 import "../modal.css";
+import { getAnimals } from "@/api/animalAPI";
 export default {
   data() {
     return {
@@ -91,7 +91,18 @@ export default {
       food: null,
     };
   },
+  props: {
+    id: Object,
+  },
   async mounted() {
+    this.id.birthday = this.id.birthday.replace("T00:00:00.000Z", "");
+    this.imageUrl = "http://localhost:5000/uploads/" + this.id.photo;
+    this.animal = this.id.animal;
+    this.aviary_number = this.id.aviarynumber;
+    this.birthday = this.id.birthday;
+    this.moniker = this.id.moniker;
+    this.description = this.id.description;
+    this.food = this.id.food;
     this.animals = await getAnimals();
   },
 
@@ -109,6 +120,32 @@ export default {
         this.description,
         this.food
       );
+    },
+    async apply() {
+      let newAnimal = {
+        ...(this.imageUrl !=
+          "http://localhost:5000/uploads/" + this.id.photo && {
+          photo: this.photo,
+        }),
+        ...(this.animal != this.id.animal && { animal: this.animal }),
+        ...(this.aviary_number != this.id.aviarynumber && {
+          aviarynumber: this.aviary_number,
+        }),
+        ...(this.birthday != this.id.birthday && { birthday: this.birthday }),
+        ...(this.moniker != this.id.moniker && { moniker: this.moniker }),
+        ...(this.description != this.id.description && {
+          description: this.description,
+        }),
+        ...(this.food != this.id.food && { food: this.food }),
+      };
+      if (Object.keys(newAnimal).length == 0) {
+        this.cancel();
+        return;
+      }
+
+      await Update(this.id.id, newAnimal);
+      this.$emit("setIsModal1", "");
+      this.$emit("update", this.id.id, newAnimal);
     },
     handleFileUpload(event) {
       const file = event.target.files[0];
@@ -134,8 +171,5 @@ export default {
   color: white;
   width: 120px;
   height: 50px;
-}
-
-#files {
 }
 </style>

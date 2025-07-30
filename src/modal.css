@@ -19,6 +19,11 @@
   min-width: 300px;
 }
 
+.modal-content3 {
+  border-radius: 10px;
+  width: 650px;
+}
+
 a {
   color: white;
 }
@@ -34,9 +39,14 @@ a {
 h6 {
   color: white;
 }
+.imgAnimal {
+  width: 200px;
+  height: auto; /* или height: 150px; */
+}
 
 textarea,
-input {
+input,
+select {
   border-radius: 8px;
   padding: 5px 10px 5px 10px;
   background-color: #e5e5e599;
