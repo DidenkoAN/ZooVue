@@ -12,11 +12,11 @@ export async function Authorization(email, password) {
       })
       .json();
     if (!data.value)
-      return { status: "error", message: "Пользователь не найден" };
+      return { status: "error", message: "User not found" };
     if (data.value.user) {
       localStorage.setItem("user", JSON.stringify(data.value.user));
-      return { status: "ok", message: "Пользователь найден" };
-    } else return { status: "error", message: "Пользователь не найден" };
+      return { status: "ok", message: "User found" };
+    } else return { status: "error", message: "User not found" };
   } catch (error) {
     return { status: "error", message: error.value };
   }
@@ -54,11 +54,11 @@ export async function Registration(name, password, email, phone) {
       .json();
 
     if (!data.value)
-      return { status: "error", message: "Пользователь не найден" };
+      return { status: "error", message: "User not found" };
     if (data.value.user) {
       localStorage.setItem("user", JSON.stringify(data.value.user));
-      return { status: "ok", message: "Пользователь найден" };
-    } else return { status: "error", message: "Пользователь не найден" };
+      return { status: "ok", message: "User found" };
+    } else return { status: "error", message: "User not found" };
   } catch (error) {
     return { status: "error", message: error.value };
   }

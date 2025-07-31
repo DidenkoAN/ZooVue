@@ -23,7 +23,7 @@ export async function Add(
     let { isFetching, error, data } = await useFetch(url + "/add", {})
       .post(formdata)
       .json();
-    if (!data.value) return { status: "error", message: "Ошибка" };
+    if (!data.value) return { status: "error", message: "Error" };
     return { status: "ok", message: data.value.animalCard };
 
     return error.value;

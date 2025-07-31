@@ -10,7 +10,7 @@ export async function Add(type, description) {
         description: description,
       })
       .json();
-    if (!data.value) return { status: "error", message: "Ошибка" };
+    if (!data.value) return { status: "error", message: "Error" };
     return { status: "ok", message: data.value.animal };
 
     // return error.value;
