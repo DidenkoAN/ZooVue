@@ -29,7 +29,11 @@ export default {
 
   methods: {
     async yes() {
-      await DeleteProfile();
+      const error = await DeleteProfile();
+      if (error) {
+        window.alert(error.message);
+        return;
+      }
       this.$emit("setIsModal1", "");
     },
     no() {

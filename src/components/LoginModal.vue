@@ -39,9 +39,9 @@ export default {
 
   methods: {
     async loginInWeb() {
-      const error = await Authorization(this.email, this.password);
-      if (error) {
-        this.error = error;
+      const dataAPI = await Authorization(this.email, this.password);
+      if (dataAPI.status == "error") {
+        this.error = dataAPI.message;
         return;
       }
       this.$emit("setIsModal", "");

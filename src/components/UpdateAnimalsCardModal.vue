@@ -103,28 +103,39 @@ export default {
     this.moniker = this.id.moniker;
     this.description = this.id.description;
     this.food = this.id.food;
-    this.animals = await getAnimals();
+    const animalIn = await getAnimals();
+    if (animalIn.status == "error") {
+      window.alert(error.message);
+      return;
+    } else
+      this.animals = animalIn.message.filter((animal) => animal.removed == 0);
   },
 
   methods: {
+    valid() {
+      let error = "";
+      if (this.animal == null) error += "Animal not selected. ";
+      if (isNaN(Date.parse(this.birthday))) error += "Invalid date. ";
+      if (typeof this.aviary_number != "number")
+        error += "Invalid aviary number. ";
+      if (this.moniker == "") error += "Moniker is not filled. ";
+      if (this.food == "") error += "Food is not filled. ";
+      if (this.description == "") error += "Description is not filled. ";
+      if (this.imageUrl == null) error += "Image not selected. ";
+      if (error != "") {
+        window.alert(error);
+        return false;
+      }
+      return true;
+    },
     cancel() {
       this.$emit("setIsModal1", "");
     },
     async apply() {
-      await Add(
-        this.photo,
-        this.animal,
-        this.aviary_number,
-        this.birthday,
-        this.moniker,
-        this.description,
-        this.food
-      );
-    },
-    async apply() {
-      let newAnimal = {
+      if (!this.valid()) return;
+      let newAnimalCard = {
         ...(this.imageUrl !=
-          "http://localhost:5000/uploads/" + this.id.photo && {
+          import.meta.env.VITE_URL_SERVER + "/uploads/" + this.id.photo && {
           photo: this.photo,
         }),
         ...(this.animal != this.id.animal && { animal: this.animal }),
@@ -142,8 +153,11 @@ export default {
         this.cancel();
         return;
       }
-
-      await Update(this.id.id, newAnimal);
+      const error = await Update(this.id.id, newAnimalCard);
+      if (error) {
+        window.alert(error.message);
+        return;
+      }
       this.$emit("setIsModal1", "");
       this.$emit("update", this.id.id, newAnimal);
     },

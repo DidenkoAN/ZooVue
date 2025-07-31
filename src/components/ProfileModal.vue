@@ -51,7 +51,11 @@ export default {
       this.$emit("setIsModal", "");
     },
     async deleteProfile() {
-      await DeleteProfile();
+      const error = await DeleteProfile();
+      if (error) {
+        window.alert(error.message);
+        return;
+      }
       this.$emit("setIsModal", "LoginModal");
     },
   },

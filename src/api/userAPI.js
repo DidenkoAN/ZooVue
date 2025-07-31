@@ -1,21 +1,24 @@
 import { useFetch } from "@vueuse/core";
 
-const url = "http://localhost:5000/api/user";
+const url = import.meta.env.VITE_URL_SERVER + "/api/user";
 
 export async function Authorization(email, password) {
   try {
+    console.log();
     let { isFetching, error, data } = await useFetch(url + "/authorization", {})
       .post({
         email: email,
         password: password,
       })
       .json();
-    if (!data.value) return "Ошибка";
-    if (data.value.user)
+    if (!data.value)
+      return { status: "error", message: "Пользователь не найден" };
+    if (data.value.user) {
       localStorage.setItem("user", JSON.stringify(data.value.user));
-    else return error.value;
+      return { status: "ok", message: "Пользователь найден" };
+    } else return { status: "error", message: "Пользователь не найден" };
   } catch (error) {
-    return error.value;
+    return { status: "error", message: error.value };
   }
 }
 
@@ -30,13 +33,13 @@ export async function DeleteProfile() {
     }).json;
     localStorage.removeItem("user");
   } catch (error) {
-    return error.value;
+    return { status: "error", message: error.value };
   }
 }
 
 export async function getUsers() {
   let { isFetching, error, data } = await useFetch(url + "/get").json();
-  return data.value.usersAll;
+  return { status: "ok", message: data.value.usersAll };
 }
 
 export async function Registration(name, password, email, phone) {
@@ -49,11 +52,13 @@ export async function Registration(name, password, email, phone) {
         phone: phone,
       })
       .json();
-    if (!data.value) return "Ошибка";
+
+    if (!data.value)
+      return { status: "error", message: "Пользователь не найден" };
     if (data.value.user)
       localStorage.setItem("user", JSON.stringify(data.value.user));
-    else return error.value;
+    else return { status: "error", message: "Пользователь не найден" };
   } catch (error) {
-    return error.value;
+    return { status: "error", message: error.value };
   }
 }

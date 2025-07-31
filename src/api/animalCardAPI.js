@@ -1,6 +1,6 @@
 import { useFetch } from "@vueuse/core";
 
-const url = "http://localhost:5000/api/animalCard";
+const url = import.meta.env.VITE_URL_SERVER + "/api/animalCard";
 
 export async function Add(
   photo,
@@ -23,19 +23,22 @@ export async function Add(
     let { isFetching, error, data } = await useFetch(url + "/add", {})
       .post(formdata)
       .json();
-    return data;
-    // if (!data.value) return "Ошибка";
-    // return data.value.animal;
+    if (!data.value) return { status: "error", message: "Ошибка" };
+    return { status: "ok", message: data.value.animalCard };
 
-    // return error.value;
-  } catch (error) {
     return error.value;
+  } catch (error) {
+    return { status: "error", message: error.value };
   }
 }
 
 export async function getAnimalCards() {
-  let { isFetching, error, data } = await useFetch(url + "/get").json();
-  return data.value.animalCardsAll;
+  try {
+    let { isFetching, error, data } = await useFetch(url + "/get").json();
+    return { status: "ok", message: data.value.animalCardsAll };
+  } catch (error) {
+    return { status: "error", message: error.value };
+  }
 }
 
 export async function DeleteAnimalCard(id) {
@@ -47,12 +50,16 @@ export async function DeleteAnimalCard(id) {
       id: id,
     }).json;
   } catch (error) {
-    return error.value;
+    return { status: "error", message: error.value };
   }
 }
 
 export async function Update(id, params) {
-  let { isFetching, error, data } = await useFetch(url + "/update", {})
-    .post({ id: id, params: params })
-    .json();
+  try {
+    let { isFetching, error, data } = await useFetch(url + "/update", {})
+      .post({ id: id, params: params })
+      .json();
+  } catch (error) {
+    return { status: "error", message: error.value };
+  }
 }

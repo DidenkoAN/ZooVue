@@ -92,15 +92,37 @@ export default {
     };
   },
   async mounted() {
-    this.animals = await getAnimals();
+    const animalIn = await getAnimals();
+    if (animalIn.status == "error") {
+      window.alert(error.message);
+      return;
+    } else
+      this.animals = animalIn.message.filter((animal) => animal.removed == 0);
   },
 
   methods: {
+    valid() {
+      let error = "";
+      if (this.animal == null) error += "Animal not selected. ";
+      if (isNaN(Date.parse(this.birthday))) error += "Invalid date. ";
+      if (typeof this.aviary_number != "number")
+        error += "Invalid aviary number. ";
+      if (this.moniker == null) error += "Moniker is not filled. ";
+      if (this.food == null) error += "Food is not filled. ";
+      if (this.description == null) error += "Description is not filled. ";
+      if (this.imageUrl == null) error += "Image not selected. ";
+      if (error != "") {
+        window.alert(error);
+        return false;
+      }
+      return true;
+    },
     cancel() {
       this.$emit("setIsModal1", "");
     },
     async apply() {
-      await Add(
+      if (!this.valid()) return;
+      const animalCard = await Add(
         this.photo,
         this.animal,
         this.aviary_number,
@@ -109,6 +131,16 @@ export default {
         this.description,
         this.food
       );
+      if (animalCard.status == "error") {
+        window.alert(animalCard.message);
+        return;
+      }
+      this.$emit("setIsModal1", "");
+      let newAnimalCard = animalCard.message;
+      let animal = this.animals.find(
+        (animal) => animal.id == newAnimalCard.animal
+      );
+      this.$emit("setDatas", { ...newAnimalCard, Animal: animal });
     },
     handleFileUpload(event) {
       const file = event.target.files[0];

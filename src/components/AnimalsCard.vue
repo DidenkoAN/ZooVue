@@ -62,7 +62,9 @@
             <th class="col" scope="row">{{ data.id }}</th>
             <td class="col">{{ data.aviarynumber }}</td>
             <td class="col">{{ data.Animal.kind_of_animal }}</td>
-            <td class="col">{{ data.birthday }}</td>
+            <td class="col">
+              {{ data.birthday.replace("T00:00:00.000Z", "") }}
+            </td>
             <td class="col">{{ data.moniker }}</td>
             <td class="col">{{ data.description }}</td>
             <td class="col">{{ data.food }}</td>
@@ -113,8 +115,9 @@ export default {
     },
 
     async start() {
-      this.datas = await getAnimalCards();
-      console.log(this.datas);
+      const data = await getAnimalCards();
+      if (data.status == "ok") this.datas = data.message;
+      else window.alert(data.message);
     },
 
     add() {

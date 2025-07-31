@@ -32,7 +32,11 @@ export default {
 
   methods: {
     async yes() {
-      await DeleteAnimalCard(this.id);
+      const error = await DeleteAnimalCard(this.id);
+      if (error) {
+        window.alert(error.message);
+        return;
+      }
       this.$emit("update", this.id, { removed: true });
       this.$emit("setIsModal1", "");
     },

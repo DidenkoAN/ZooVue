@@ -102,10 +102,13 @@ export default {
     },
 
     setDatas(_data) {
+      console.log(_data, this.datas);
       this.datas.push(_data);
     },
     async start() {
-      this.datas = await getAnimals();
+      const data = await getAnimals();
+      if (data.status == "ok") this.datas = data.message;
+      else window.alert(data.message);
     },
     add() {
       this.isModal = "AddAnimalModal";

@@ -40,10 +40,26 @@ export default {
     cancel() {
       this.$emit("setIsModal1", "");
     },
+
+    valid() {
+      let error = "";
+      if (this.type == null) error += "Type is not filled. ";
+      if (this.description == null) error += "Description is not filled. ";
+      if (error != "") {
+        window.alert(error);
+        return false;
+      }
+      return true;
+    },
     async apply() {
+      if (!this.valid()) return;
       const animal = await Add(this.type, this.description);
+      if (animal.status == "error") {
+        window.alert(animal.message);
+        return;
+      }
       this.$emit("setIsModal1", "");
-      this.$emit("setDatas", animal);
+      this.$emit("setDatas", animal.message);
     },
   },
 };

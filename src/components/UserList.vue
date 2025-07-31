@@ -77,7 +77,9 @@ export default {
   },
   methods: {
     async start() {
-      this.datas = await getUsers();
+      let data = await getUsers();
+      if (data.status == "ok") this.datas = data.message;
+      else window.alert(data.message);
     },
 
     delete() {

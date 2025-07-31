@@ -12,6 +12,14 @@
           <input type="password" class="col col-8" v-model="this.password" />
         </div>
         <div class="mb-4 row">
+          <label class="col col-4 lab">Repeat</label>
+          <input
+            type="password"
+            class="col col-8"
+            v-model="this.password_repeat"
+          />
+        </div>
+        <div class="mb-4 row">
           <label class="col col-4 lab">E-mail</label>
           <input class="col col-8" v-model="this.email" />
         </div>
@@ -43,6 +51,7 @@ export default {
     return {
       name: "",
       password: "",
+      password_repeat: "",
       email: "",
       phone: "",
       errors: [],
@@ -71,11 +80,11 @@ export default {
         );
       }
 
-      // if (password.value != password1.value) {
-      //   error =
-      //     "Error in password confirmation.\nThe passwords you entered do not match\n\n";
-      //   createError(password1, error);
-      // }
+      if (this.password != this.password_repeat) {
+        this.errors.push(
+          "Error in password confirmation.\nThe passwords you entered do not match"
+        );
+      }
       if (!/^[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}$/.test(this.email)) {
         this.errors.push(
           "The email can contain only Latin characters or digits, and '@'."
@@ -91,14 +100,19 @@ export default {
       }
     },
     async regist() {
-      // this.valid();
-      const error = await Registration(
+      this.valid();
+      if (this.errors.length > 0) return;
+      const dataAPI = await Registration(
         this.name,
         this.password,
         this.email,
         this.phone
       );
-      if (!error) this.$emit("setIsModal", "");
+      if (dataAPI.status == "error") {
+        this.error.push(dateAPI.message);
+        return;
+      }
+      this.$emit("setIsModal", "");
     },
   },
 };

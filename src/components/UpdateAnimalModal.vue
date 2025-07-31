@@ -44,10 +44,21 @@ export default {
     this.description = this.id.description;
   },
   methods: {
+    valid() {
+      let error = "";
+      if (this.type == "") error += "Type is not filled. ";
+      if (this.description == "") error += "Description is not filled. ";
+      if (error != "") {
+        window.alert(error);
+        return false;
+      }
+      return true;
+    },
     cancel() {
       this.$emit("setIsModal1", "");
     },
     async apply() {
+      if (!this.valid()) return;
       let newAnimal = {
         ...(this.type != this.id.kind_of_animal && {
           kind_of_animal: this.type,
@@ -60,8 +71,11 @@ export default {
         this.cancel();
         return;
       }
-
-      await Update(this.id.id, newAnimal);
+      const error = await Update(this.id.id, newAnimal);
+      if (error) {
+        window.alert(error.message);
+        return;
+      }
       this.$emit("setIsModal1", "");
       this.$emit("update", this.id.id, newAnimal);
     },
