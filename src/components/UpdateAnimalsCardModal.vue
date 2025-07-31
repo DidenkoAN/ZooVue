@@ -155,11 +155,11 @@ export default {
         return;
       }
       const error = await Update(this.id.id, newAnimalCard);
-      if (error) {
+      if (error.status == "error") {
         window.alert(error.message);
         return;
       }
-
+      if ("photo" in newAnimalCard) newAnimalCard.photo = error.message;
       this.$emit("setIsModal1", "");
       this.$emit("update", this.id.id, newAnimalCard);
     },

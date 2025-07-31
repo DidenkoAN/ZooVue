@@ -65,6 +65,7 @@ export async function Update(id, params) {
     let { isFetching, error, data } = await useFetch(url + "/update", {})
       .post(formdata)
       .json();
+    return { status: "ok", message: data.value };
   } catch (error) {
     return { status: "error", message: error.value };
   }
