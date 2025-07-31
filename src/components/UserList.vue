@@ -40,8 +40,8 @@
             v-if="
               Boolean(data.removed) == this.removed &&
               (this.name == '' || data.name.includes(this.name)) &&
-              (this.email == '' || data.name.includes(this.email)) &&
-              (this.phone == '' || data.name.includes(this.phone))
+              (this.email == '' || data.email.includes(this.email)) &&
+              (this.phone == '' || data.phone.includes(this.phone))
             "
           >
             <th scope="row">{{ data.id }}</th>
