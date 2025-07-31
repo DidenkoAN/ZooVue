@@ -96,7 +96,8 @@ export default {
   },
   async mounted() {
     this.id.birthday = this.id.birthday.replace("T00:00:00.000Z", "");
-    this.imageUrl = "http://localhost:5000/uploads/" + this.id.photo;
+    this.imageUrl =
+      import.meta.env.VITE_URL_SERVER + "/uploads/" + this.id.photo;
     this.animal = this.id.animal;
     this.aviary_number = this.id.aviarynumber;
     this.birthday = this.id.birthday;
