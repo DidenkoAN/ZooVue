@@ -149,7 +149,7 @@ export default {
         }),
         ...(this.food != this.id.food && { food: this.food }),
       };
-      if (Object.keys(newAnimal).length == 0) {
+      if (Object.keys(newAnimalCard).length == 0) {
         this.cancel();
         return;
       }
