@@ -55,9 +55,10 @@ export async function Registration(name, password, email, phone) {
 
     if (!data.value)
       return { status: "error", message: "Пользователь не найден" };
-    if (data.value.user)
+    if (data.value.user) {
       localStorage.setItem("user", JSON.stringify(data.value.user));
-    else return { status: "error", message: "Пользователь не найден" };
+      return { status: "ok", message: "Пользователь найден" };
+    } else return { status: "error", message: "Пользователь не найден" };
   } catch (error) {
     return { status: "error", message: error.value };
   }

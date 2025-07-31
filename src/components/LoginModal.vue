@@ -4,7 +4,7 @@
       <div class="modal-content1 bodyModal text-center">
         <div class="mb-4 row"><h1>Authorization</h1></div>
         <div class="row mx-5">
-          <input placeholder="Login" v-model="this.email" />
+          <input placeholder="E-mail" v-model="this.email" />
         </div>
         <div class="row mx-5 my-4">
           <input
