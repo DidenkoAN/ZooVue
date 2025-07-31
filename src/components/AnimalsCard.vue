@@ -71,10 +71,10 @@
             <td class="col" v-if="!this.removed">
               <div class="row">
                 <div class="col col-6">
-                  <button @click="this.updateM(data.id)">U</button>
+                  <img class="icon" @click="this.updateM(data.id)" src="../icon/edit.png"></img>
                 </div>
                 <div class="col col-6">
-                  <button @click="this.deleteAnimalCard(data.id)">R</button>
+                   <img class="icon" @click="this.deleteAnimalCard(data.id)" src="../icon/delete.png"></img>
                 </div>
               </div>
             </td>
@@ -155,5 +155,11 @@ td {
   background-color: #4c5c81;
   border: 1px solid white;
   padding: 8px;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
 }
 </style>
