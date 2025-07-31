@@ -4,7 +4,7 @@
       <div class="modal-content1">
         <div class="fotterModal p-3">
           <div class="row">
-            <h1 class="lab col col-4">Nikname</h1>
+            <h1 class="lab col col-4">Profile</h1>
             <h6 class="col col-8 mt-3">id 1345253</h6>
           </div>
         </div>
