@@ -15,10 +15,10 @@
           class="actBtn"
           @click="setIsModal('LoginModal')"
         >
-          Вход
+          Log
         </button>
 
-        <button v-else class="actBtn" @click="logout">Выход</button>
+        <button v-else class="actBtn" @click="logout">Logout</button>
       </div>
     </div>
 
