@@ -149,6 +149,7 @@ export default {
         }),
         ...(this.food != this.id.food && { food: this.food }),
       };
+
       if (Object.keys(newAnimalCard).length == 0) {
         this.cancel();
         return;
@@ -158,8 +159,9 @@ export default {
         window.alert(error.message);
         return;
       }
+
       this.$emit("setIsModal1", "");
-      this.$emit("update", this.id.id, newAnimal);
+      this.$emit("update", this.id.id, newAnimalCard);
     },
     handleFileUpload(event) {
       const file = event.target.files[0];

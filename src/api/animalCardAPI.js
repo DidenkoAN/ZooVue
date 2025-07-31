@@ -56,8 +56,14 @@ export async function DeleteAnimalCard(id) {
 
 export async function Update(id, params) {
   try {
+    let formdata = new FormData();
+    formdata.append("id", id);
+
+    for (let key in params) {
+      formdata.append(key, params[key]);
+    }
     let { isFetching, error, data } = await useFetch(url + "/update", {})
-      .post({ id: id, params: params })
+      .post(formdata)
       .json();
   } catch (error) {
     return { status: "error", message: error.value };
