@@ -56,10 +56,10 @@ export default {
       let error = "";
       if (this.v$.type.$invalid)
         error +=
-          "Type is not filled. \nWarning - invalid data, user must input the type of animal.\n\n";
+          "Warning - invalid data, user must input the type of animal.\n";
       if (this.v$.description.$invalid)
         error +=
-          "Type is not filled. \nWarning - invalid data, user must fill the animal description.";
+          "Warning - invalid data, user must fill the animal description.";
       window.alert(error);
     },
     async apply() {

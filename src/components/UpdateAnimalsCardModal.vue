@@ -145,25 +145,24 @@ export default {
       let error = "";
       if (this.v$.animal.$invalid)
         error +=
-          "Animal not selected.\nWarning - invalid data, user must choose the type of animal.\n\n";
+          "Warning - invalid data, user must choose the type of animal.\n";
       if (this.v$.birthday.$invalid)
         error +=
-          "Invalid date.\nWarning - invalid data, user must input the animal birthday date.\n\n";
+          "Warning - invalid data, user must input the animal birthday date.\n";
       if (this.v$.aviary_number.$invalid)
         error +=
-          "Invalid aviary number.\nWarning - invalid data, user must input the animal aviary number.\n\n";
+          "Warning - invalid data, user must input the animal aviary number.\n";
       if (this.v$.moniker.$invalid)
         error +=
-          "Moniker is not filled.\nWarning - invalid data, user must input the animal moniker.\n\n";
+          "Warning - invalid data, user must input the animal moniker.\n";
       if (this.v$.food.$invalid)
-        error +=
-          "Food is not filled. \nWarning - invalid data, user must list the animal food.\n\n";
+        error += "Warning - invalid data, user must list the animal food.\n";
       if (this.v$.description.$invalid)
         error +=
-          "Description is not filled.\nWarning - invalid data, user must input the animal description.\n\n";
+          "Warning - invalid data, user must input the animal description.\n";
       if (this.v$.imageUrl.$invalid)
         error +=
-          "Image not selected.\nWarning - invalid data, user must upload a photo of the animal.\n\n";
+          "Warning - invalid data, user must upload a photo of the animal.";
       window.alert(error);
     },
     cancel() {
