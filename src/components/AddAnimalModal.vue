@@ -28,6 +28,8 @@
 </template>
 <script>
 import { Add } from "@/api/animalAPI";
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 
 export default {
   data() {
@@ -36,6 +38,15 @@ export default {
       description: "",
     };
   },
+  validations() {
+    return {
+      type: { required },
+      description: { required },
+    };
+  },
+  setup() {
+    return { v$: useVuelidate() };
+  },
   methods: {
     cancel() {
       this.$emit("setIsModal1", "");
@@ -43,16 +54,21 @@ export default {
 
     valid() {
       let error = "";
-      if (this.type == null) error += "Type is not filled. ";
-      if (this.description == null) error += "Description is not filled. ";
-      if (error != "") {
-        window.alert(error);
-        return false;
-      }
-      return true;
+      if (this.v$.type.$invalid)
+        error +=
+          "Type is not filled. \nWarning - invalid data, user must input the type of animal.\n\n";
+      if (this.v$.description.$invalid)
+        error +=
+          "Type is not filled. \nWarning - invalid data, user must fill the animal description.";
+      window.alert(error);
     },
     async apply() {
-      if (!this.valid()) return;
+      const isFormCorrect = await this.v$.$validate();
+
+      if (!isFormCorrect) {
+        this.valid();
+        return;
+      }
       const animal = await Add(this.type, this.description);
       if (animal.status == "error") {
         window.alert(animal.message);

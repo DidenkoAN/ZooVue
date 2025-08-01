@@ -77,6 +77,17 @@
 import { Add } from "@/api/animalCardAPI";
 import { getAnimals } from "@/api/animalAPI";
 import "../modal.css";
+import { useVuelidate } from "@vuelidate/core";
+import { required, integer, maxValue, minValue } from "@vuelidate/validators";
+
+const isFutureDate = (value) => {
+  if (!value) return false;
+  const inputDate = new Date(value);
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  return inputDate <= currentDate;
+};
+
 export default {
   data() {
     return {
@@ -91,6 +102,23 @@ export default {
       food: null,
     };
   },
+  validations() {
+    return {
+      animal: { required },
+      birthday: {
+        required,
+        isFutureDate,
+      },
+      aviary_number: { required, integer },
+      moniker: { required },
+      food: { required },
+      description: { required },
+      imageUrl: { required },
+    };
+  },
+  setup() {
+    return { v$: useVuelidate() };
+  },
   async mounted() {
     const animalIn = await getAnimals();
     if (animalIn.status == "error") {
@@ -103,25 +131,40 @@ export default {
   methods: {
     valid() {
       let error = "";
-      if (this.animal == null) error += "Animal not selected. ";
-      if (isNaN(Date.parse(this.birthday))) error += "Invalid date. ";
-      if (typeof this.aviary_number != "number")
-        error += "Invalid aviary number. ";
-      if (this.moniker == null) error += "Moniker is not filled. ";
-      if (this.food == null) error += "Food is not filled. ";
-      if (this.description == null) error += "Description is not filled. ";
-      if (this.imageUrl == null) error += "Image not selected. ";
-      if (error != "") {
-        window.alert(error);
-        return false;
-      }
-      return true;
+      if (this.v$.animal.$invalid)
+        error +=
+          "Animal not selected.\nWarning - invalid data, user must choose the type of animal.\n\n";
+      if (this.v$.birthday.$invalid)
+        error +=
+          "Invalid date.\nWarning - invalid data, user must input the animal birthday date.\n\n";
+      if (this.v$.aviary_number.$invalid)
+        error +=
+          "Invalid aviary number.\nWarning - invalid data, user must input the animal aviary number.\n\n";
+      if (this.v$.moniker.$invalid)
+        error +=
+          "Moniker is not filled.\nWarning - invalid data, user must input the animal moniker.\n\n";
+      if (this.v$.food.$invalid)
+        error +=
+          "Food is not filled. \nWarning - invalid data, user must list the animal food.\n\n";
+      if (this.v$.description.$invalid)
+        error +=
+          "Description is not filled.\nWarning - invalid data, user must input the animal description.\n\n";
+      if (this.v$.imageUrl.$invalid)
+        error +=
+          "Image not selected.\nWarning - invalid data, user must upload a photo of the animal.\n\n";
+      window.alert(error);
     },
     cancel() {
       this.$emit("setIsModal1", "");
     },
     async apply() {
-      if (!this.valid()) return;
+      const isFormCorrect = await this.v$.$validate();
+
+      if (!isFormCorrect) {
+        this.valid();
+        return;
+      }
+
       const animalCard = await Add(
         this.photo,
         this.animal,
