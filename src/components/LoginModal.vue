@@ -28,6 +28,8 @@
 <script>
 import { Authorization } from "@/api/userAPI";
 import "../modal.css";
+import { useVuelidate } from "@vuelidate/core";
+import { required, integer, maxValue, minValue } from "@vuelidate/validators";
 export default {
   data() {
     return {
@@ -36,9 +38,24 @@ export default {
       error: "",
     };
   },
+  validations() {
+    return {
+      email: { required },
+      password: { required },
+    };
+  },
+  setup() {
+    return { v$: useVuelidate() };
+  },
 
   methods: {
     async loginInWeb() {
+      const isFormCorrect = await this.v$.$validate();
+
+      if (!isFormCorrect) {
+        this.error = "Not all data is filled in";
+        return;
+      }
       const dataAPI = await Authorization(this.email, this.password);
       if (dataAPI.status == "error") {
         this.error = dataAPI.message;
