@@ -1,5 +1,9 @@
-import "bootstrap/dist/css/bootstrap.css";
-import App from "./App.vue";
-
 import { createApp } from "vue";
-createApp(App).mount("#app");
+import App from "./App.vue";
+import vuetify from "./plugins/vuetify";
+import { loadFonts } from "./plugins/webfontloader";
+import VueRouter from "./router";
+
+loadFonts();
+
+createApp(App).use(vuetify).use(VueRouter).mount("#app");

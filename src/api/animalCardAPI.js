@@ -1,72 +1,89 @@
-import { useFetch } from "@vueuse/core";
+import axios from "axios";
+const url = process.env.VUE_APP_URL_SERVER + "/api/animalCard";
 
-const url = import.meta.env.VITE_URL_SERVER + "/api/animalCard";
+export async function getAnimalCards() {
+  let animalCards;
+  try {
+    await axios
+      .get(url + "/get")
+      .then((res) => (animalCards = res.data.animalCardsAll))
+      .catch((error) => {
+        return { status: "error", value: error.message };
+      });
+    if (!animalCards) return { status: "error", value: "Error" };
+    return { status: "ok", value: animalCards };
+  } catch (error) {
+    return { status: "error", value: error.value };
+  }
+}
 
-export async function Add(
-  photo,
+export async function addAnimalCard(
   animal,
-  aviary_number,
   birthday,
+  aviary_number,
   moniker,
+  food,
   description,
-  food
+  photo
 ) {
+  let animalCard;
   try {
     let formdata = new FormData();
     formdata.append("photo", photo);
-    formdata.append("animal", animal);
+    formdata.append("animal", animal.value);
     formdata.append("aviary_number", aviary_number);
     formdata.append("birthday", birthday);
     formdata.append("moniker", moniker);
     formdata.append("description", description);
     formdata.append("food", food);
-    let { isFetching, error, data } = await useFetch(url + "/add", {})
-      .post(formdata)
-      .json();
-    if (!data.value) return { status: "error", message: "Error" };
-    return { status: "ok", message: data.value.animalCard };
-
-    return error.value;
+    await axios
+      .post(url + "/add", formdata)
+      .then((res) => (animalCard = res.data.animalCard))
+      .catch((error) => {
+        return { status: "error", value: error.message };
+      });
+    if (!animalCard) return { status: "error", value: "Error" };
+    return { status: "ok", value: animalCard };
   } catch (error) {
-    return { status: "error", message: error.value };
+    return { status: "error", value: error.value };
   }
 }
 
-export async function getAnimalCards() {
+export async function deleteAnimalCard(id) {
   try {
-    let { isFetching, error, data } = await useFetch(url + "/get").json();
-    return { status: "ok", message: data.value.animalCardsAll };
+    await axios
+      .delete(url + "/delete", {
+        data: {
+          id: id,
+        },
+      })
+      .then()
+      .catch((error) => {
+        return { status: "error", value: error.message };
+      });
+    return { status: "ok", value: animal };
   } catch (error) {
-    return { status: "error", message: error.value };
+    return { status: "error", value: error.value };
   }
 }
 
-export async function DeleteAnimalCard(id) {
+export async function editAnimalCard(id, params) {
   try {
-    let { isFetching, error, data } = await useFetch(
-      url + "/delete",
-      {}
-    ).delete({
-      id: id,
-    }).json;
-  } catch (error) {
-    return { status: "error", message: error.value };
-  }
-}
-
-export async function Update(id, params) {
-  try {
+    let _photo = "";
     let formdata = new FormData();
     formdata.append("id", id);
 
     for (let key in params) {
       formdata.append(key, params[key]);
     }
-    let { isFetching, error, data } = await useFetch(url + "/update", {})
-      .post(formdata)
-      .json();
-    return { status: "ok", message: data.value };
+    await axios
+      .post(url + "/update", formdata)
+      .then((res) => (_photo = res.data))
+      .catch((error) => {
+        return { status: "error", value: error.message };
+      });
+    return { status: "ok", value: _photo };
   } catch (error) {
-    return { status: "error", message: error.value };
+    return { status: "error", value: error.value };
   }
 }

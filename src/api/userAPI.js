@@ -1,65 +1,80 @@
-import { useFetch } from "@vueuse/core";
-
-const url = import.meta.env.VITE_URL_SERVER + "/api/user";
-
-export async function Authorization(email, password) {
-  try {
-    console.log();
-    let { isFetching, error, data } = await useFetch(url + "/authorization", {})
-      .post({
-        email: email,
-        password: password,
-      })
-      .json();
-    if (!data.value)
-      return { status: "error", message: "User not found" };
-    if (data.value.user) {
-      localStorage.setItem("user", JSON.stringify(data.value.user));
-      return { status: "ok", message: "User found" };
-    } else return { status: "error", message: "User not found" };
-  } catch (error) {
-    return { status: "error", message: error.value };
-  }
-}
-
-export async function DeleteProfile() {
-  try {
-    const id = JSON.parse(localStorage.getItem("user")).id;
-    let { isFetching, error, data } = await useFetch(
-      url + "/delete",
-      {}
-    ).delete({
-      id: id,
-    }).json;
-    localStorage.removeItem("user");
-  } catch (error) {
-    return { status: "error", message: error.value };
-  }
-}
+import { password } from "@/Validation";
+import axios from "axios";
+const url = process.env.VUE_APP_URL_SERVER + "/api/user";
 
 export async function getUsers() {
-  let { isFetching, error, data } = await useFetch(url + "/get").json();
-  return { status: "ok", message: data.value.usersAll };
+  let users;
+  try {
+    await axios
+      .get(url + "/get")
+      .then((res) => (users = res.data.usersAll))
+      .catch((error) => {
+        return { status: "error", value: error.message };
+      });
+
+    if (!users) return { status: "error", value: "Error" };
+    return { status: "ok", value: users };
+  } catch (error) {
+    return { status: "error", value: error.value };
+  }
 }
 
-export async function Registration(name, password, email, phone) {
+export async function registration(name, password, email, phone) {
   try {
-    let { isFetching, error, data } = await useFetch(url + "/registration", {})
-      .post({
+    let user;
+    let errorMess;
+    await axios
+      .post(url + "/registration", {
         name: name,
         password: password,
         email: email,
         phone: phone,
       })
-      .json();
-
-    if (!data.value)
-      return { status: "error", message: "User not found" };
-    if (data.value.user) {
-      localStorage.setItem("user", JSON.stringify(data.value.user));
-      return { status: "ok", message: "User found" };
-    } else return { status: "error", message: "User not found" };
+      .then((res) => (user = res.data.user))
+      .catch((error) => (errorMess = error.response.data.error));
+    if (errorMess) return { status: "error", value: errorMess };
+    if (!user) return { status: "error", value: "Error" };
+    return { status: "ok", value: user };
   } catch (error) {
-    return { status: "error", message: error.value };
+    return { status: "error", value: error.value };
+  }
+}
+
+export async function authorization(email, password) {
+  try {
+    let user;
+    let errorMess;
+    await axios
+      .post(url + "/authorization", {
+        password: password,
+        email: email,
+      })
+
+      .then((res) => (user = res.data.user))
+      .catch((error) => (errorMess = error.response.data.error));
+    if (errorMess) return { status: "error", value: errorMess };
+    if (!user) return { status: "error", value: "Error" };
+    return { status: "ok", value: user };
+  } catch (error) {
+    return { status: "error", value: error.value };
+  }
+}
+
+export async function deleteProfile(id) {
+  try {
+    let errorMess;
+    await axios
+      .delete(url + "/delete", {
+        data: {
+          id: id,
+        },
+      })
+      .then()
+      .catch((error) => (errorMess = error.response.data.error));
+    if (errorMess) return { status: "error", value: errorMess };
+    if (!user) return { status: "error", value: "Error" };
+    return { status: "ok", value: user };
+  } catch (error) {
+    return { status: "error", value: error.value };
   }
 }
